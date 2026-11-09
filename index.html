@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ASD Hockey Club Roma — Calendario partite</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +17,8 @@
     --ink-soft:#6B5650;
     --u16:#A9791E;
     --u16-tint:#FAF0D7;
+    --u18:#2F6B4F;
+    --u18-tint:#E1F0E7;
     --u20:#7A1522;
     --u20-tint:#F4E2E1;
     --past-bg:#F1EDE8;
@@ -24,6 +26,7 @@
     --card-bg:#FFFFFF;
     --page-bg:#F7F4EF;
     --rule:#E4DAD0;
+    --month:#8C1D2B;
     --gold:#C9A227;
     --radius:10px;
   }
@@ -36,9 +39,11 @@
       --rule:#3A2622;
       --turf-tint:#3A2A14;
       --u16-tint:#332711;
+      --u18-tint:#17291F;
       --u20-tint:#33191A;
       --past-bg:#221715;
       --past-ink:#6E5D57;
+      --month:#D9AE4E;
     }
   }
   :root[data-theme="dark"]{
@@ -49,9 +54,11 @@
     --rule:#3A2622;
     --turf-tint:#3A2A14;
     --u16-tint:#332711;
+    --u18-tint:#17291F;
     --u20-tint:#33191A;
     --past-bg:#221715;
     --past-ink:#6E5D57;
+    --month:#D9AE4E;
   }
 
   *{box-sizing:border-box;}
@@ -160,6 +167,12 @@
     color:var(--u16);
   }
   .chip[data-cat="U16"].active .dot{background:var(--u16);}
+  .chip[data-cat="U18"].active{
+    border-color:var(--u18);
+    background:var(--u18-tint);
+    color:var(--u18);
+  }
+  .chip[data-cat="U18"].active .dot{background:var(--u18);}
   .chip[data-cat="U20"].active{
     border-color:var(--u20);
     background:var(--u20-tint);
@@ -213,13 +226,11 @@
     font-weight:600;
     font-size:13.5px;
     letter-spacing:0.5px;
-    color:var(--turf);
+    color:var(--month);
     margin:26px 0 10px;
     padding-bottom:6px;
     border-bottom:1px solid var(--rule);
   }
-  :root[data-theme="dark"] .month-heading,
-  @media (prefers-color-scheme: dark){ .month-heading{color:#D9AE4E;} }
 
   .match{
     display:flex;
@@ -279,6 +290,7 @@
     letter-spacing:0.2px;
   }
   .tag.cat-U16{background:var(--u16-tint); color:var(--u16);}
+  .tag.cat-U18{background:var(--u18-tint); color:var(--u18);}
   .tag.cat-U20{background:var(--u20-tint); color:var(--u20);}
   .tag.home{background:var(--turf-tint); color:var(--turf);}
   .tag.away{background:var(--rule); color:var(--ink-soft);}
@@ -343,12 +355,13 @@
     <div class="club-name">ASD HOCKEY CLUB ROMA</div>
   </div>
   <h1>Calendario partite</h1>
-  <p class="sub">Tutte le partite delle squadre Under 16 e Under 20, in un unico posto.</p>
+  <p class="sub">Tutte le partite delle squadre Under 16, Under 18 e Under 20, in un unico posto.</p>
 </header>
 
 <div class="controls">
   <div class="chips" id="chips">
     <button class="chip active" data-cat="U16"><span class="dot"></span>Under 16</button>
+    <button class="chip active" data-cat="U18"><span class="dot"></span>Under 18</button>
     <button class="chip active" data-cat="U20"><span class="dot"></span>Under 20</button>
   </div>
   <label class="toggle-wrap">
@@ -365,14 +378,15 @@
   <div id="list"></div>
   <div class="empty" id="emptyState" style="display:none;">
     <strong>Nessuna partita da mostrare</strong>
-    Prova ad attivare un'altra categoria o a mostrare anche le partite passate.
+    Prova ad attivare un’altra categoria o a mostrare anche le partite passate.
   </div>
 </main>
 
-<footer>Tocca "Under 16" o "Under 20" per filtrare · i dati vengono dai calendari federali caricati</footer>
+<footer>Tocca “Under 16”, “Under 18” o “Under 20” per filtrare · i dati vengono dai calendari federali caricati</footer>
 
 <script>
 const ROMA = "ASD HOCKEY CLUB ROMA";
+const CATS = ["U16","U18","U20"];
 
 // dd/mm/yyyy hh.mm -> Date
 function parseIt(dateStr, timeStr){
@@ -393,6 +407,10 @@ const raw = [
   {cat:"U20", dow:"Dom", date:"14/03/2027", time:"11.00", home:"ASD HOCKEY CLUB ROMA", away:"BUTTERFLY ROMA H.C.C.", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
   {cat:"U20", dow:"Dom", date:"04/04/2027", time:"11.00", home:"TEVERE EUR HOCKEY ASD", away:"ASD HOCKEY CLUB ROMA", venue:"Euroma Stadium — Via Bilbao, 12"},
   {cat:"U20", dow:"Dom", date:"18/04/2027", time:"10.00", home:"ASD HOCKEY CLUB ROMA", away:"LAZIO HOCKEY", venue:"ANNULLATA"},
+  // Under 18
+  {cat:"U18", dow:"Dom", date:"22/11/2026", time:"11.00", home:"ASD HOCKEY CLUB ROMA", away:"LAZIO HOCKEY", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
+  {cat:"U18", dow:"Dom", date:"29/11/2026", time:"11.00", home:"BUTTERFLY ROMA H.C.C.", away:"ASD HOCKEY CLUB ROMA", venue:"Centro Giulio Onesti — Via dei Campi Sportivi, 48"},
+  {cat:"U18", dow:"Sab", date:"05/12/2026", time:"15.00", home:"TEVERE EUR HOCKEY ASD", away:"ASD HOCKEY CLUB ROMA", venue:"Euroma Stadium — Via Bilbao, 12"},
   // Under 16
   {cat:"U16", dow:"Dom", date:"18/10/2026", time:"10.00", home:"ASD HOCKEY CLUB ROMA", away:"BUTTERFLY ROMA H.C.C.", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
   {cat:"U16", dow:"Dom", date:"07/11/2026", time:"13.00", home:"ASD HOCKEY AVEZZANO 1969", away:"ASD HOCKEY CLUB ROMA", venue:"Campo Sportivo Comunale Hockey, Loc. Cretara — Via dei Gladioli, snc"},
@@ -411,23 +429,28 @@ const matches = raw.map(m => {
 const MONTHS = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
 
 const state = {
-  cats: new Set(["U16","U20"]),
+  cats: new Set(CATS),
   hidePast: true
 };
 
+const STORAGE_KEY = 'hockey-cal-state-v2';
+
 function loadState(){
   try{
-    const s = localStorage.getItem('hockey-cal-state');
+    const s = localStorage.getItem(STORAGE_KEY);
     if(s){
       const parsed = JSON.parse(s);
-      if(Array.isArray(parsed.cats) && parsed.cats.length) state.cats = new Set(parsed.cats);
+      if(Array.isArray(parsed.cats)){
+        const valid = parsed.cats.filter(c => CATS.includes(c));
+        if(valid.length) state.cats = new Set(valid);
+      }
       if(typeof parsed.hidePast === 'boolean') state.hidePast = parsed.hidePast;
     }
   }catch(e){ /* ignore, use defaults */ }
 }
 function saveState(){
   try{
-    localStorage.setItem('hockey-cal-state', JSON.stringify({cats:[...state.cats], hidePast: state.hidePast}));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({cats:[...state.cats], hidePast: state.hidePast}));
   }catch(e){ /* ignore */ }
 }
 
