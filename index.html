@@ -21,6 +21,8 @@
     --u18-tint:#E1F0E7;
     --u20:#7A1522;
     --u20-tint:#F4E2E1;
+    --indoor:#3B5A8A;
+    --indoor-tint:#E4EAF4;
     --past-bg:#F1EDE8;
     --past-ink:#948580;
     --card-bg:#FFFFFF;
@@ -41,6 +43,8 @@
       --u16-tint:#332711;
       --u18-tint:#17291F;
       --u20-tint:#33191A;
+      --indoor:#8FB0E0;
+      --indoor-tint:#1C2433;
       --past-bg:#221715;
       --past-ink:#6E5D57;
       --month:#D9AE4E;
@@ -56,6 +60,8 @@
     --u16-tint:#332711;
     --u18-tint:#17291F;
     --u20-tint:#33191A;
+    --indoor:#8FB0E0;
+    --indoor-tint:#1C2433;
     --past-bg:#221715;
     --past-ink:#6E5D57;
     --month:#D9AE4E;
@@ -294,6 +300,7 @@
   .tag.cat-U20{background:var(--u20-tint); color:var(--u20);}
   .tag.home{background:var(--turf-tint); color:var(--turf);}
   .tag.away{background:var(--rule); color:var(--ink-soft);}
+  .tag.indoor{background:var(--indoor-tint); color:var(--indoor);}
   .match.is-past .tag{opacity:0.6;}
 
   .time{
@@ -318,6 +325,11 @@
     font-size:12.5px;
     color:var(--ink-soft);
     line-height:1.4;
+  }
+  .venue.main{
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink);
   }
 
   .empty{
@@ -388,13 +400,14 @@
 const ROMA = "ASD HOCKEY CLUB ROMA";
 const CATS = ["U16","U18","U20"];
 
-// dd/mm/yyyy hh.mm -> Date
+// dd/mm/yyyy hh.mm -> Date (senza orario = mezzanotte)
 function parseIt(dateStr, timeStr){
   const [d,m,y] = dateStr.split('/').map(Number);
-  const [hh,mm] = timeStr.replace('.',':').split(':').map(Number);
+  const [hh,mm] = (timeStr || "00.00").replace('.',':').split(':').map(Number);
   return new Date(y, m-1, d, hh, mm);
 }
 
+// Partite outdoor: home/away/time. Concentramenti indoor: indoor:true, solo data e campo.
 const raw = [
   // Under 20
   {cat:"U20", dow:"Dom", date:"27/09/2026", time:"12.00", home:"ASD HOCKEY CLUB ROMA", away:"H.POTENZA PICENA", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
@@ -402,19 +415,23 @@ const raw = [
   {cat:"U20", dow:"Dom", date:"01/11/2026", time:"12.00", home:"BUTTERFLY ROMA H.C.C.", away:"ASD HOCKEY CLUB ROMA", venue:"Centro Giulio Onesti — Via dei Campi Sportivi, 48"},
   {cat:"U20", dow:"Dom", date:"08/11/2026", time:"10.00", home:"ASD HOCKEY CLUB ROMA", away:"TEVERE EUR HOCKEY ASD", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
   {cat:"U20", dow:"Dom", date:"22/11/2026", time:"11.00", home:"LAZIO HOCKEY ASD", away:"ASD HOCKEY CLUB ROMA", venue:"ANNULLATA"},
+  {cat:"U20", dow:"Dom", date:"06/12/2026", indoor:true, venue:"Millevoi (Divino Amore)"},
+  {cat:"U20", dow:"Dom", date:"10/01/2027", indoor:true, venue:"Millevoi (Divino Amore)"},
   {cat:"U20", dow:"Dom", date:"28/02/2027", time:"12.00", home:"H.POTENZA PICENA", away:"ASD HOCKEY CLUB ROMA", venue:"Stadio Hockey Potenza Picena — Contrada San Girio, snc"},
   {cat:"U20", dow:"Dom", date:"28/02/2027", time:"16.30", home:"H.POTENZA PICENA - RISERVE", away:"ASD HOCKEY CLUB ROMA", venue:"Stadio Hockey Potenza Picena — Contrada San Girio, snc"},
   {cat:"U20", dow:"Dom", date:"14/03/2027", time:"11.00", home:"ASD HOCKEY CLUB ROMA", away:"BUTTERFLY ROMA H.C.C.", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
   {cat:"U20", dow:"Dom", date:"04/04/2027", time:"11.00", home:"TEVERE EUR HOCKEY ASD", away:"ASD HOCKEY CLUB ROMA", venue:"Euroma Stadium — Via Bilbao, 12"},
   {cat:"U20", dow:"Dom", date:"18/04/2027", time:"10.00", home:"ASD HOCKEY CLUB ROMA", away:"LAZIO HOCKEY", venue:"ANNULLATA"},
   // Under 18
-  {cat:"U18", dow:"Dom", date:"22/11/2026", time:"11.00", home:"ASD HOCKEY CLUB ROMA", away:"LAZIO HOCKEY", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
+  {cat:"U18", dow:"Dom", date:"22/11/2026", time:"11.00", home:"LAZIO HOCKEY", away:"ASD HOCKEY CLUB ROMA", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
   {cat:"U18", dow:"Dom", date:"29/11/2026", time:"11.00", home:"BUTTERFLY ROMA H.C.C.", away:"ASD HOCKEY CLUB ROMA", venue:"Centro Giulio Onesti — Via dei Campi Sportivi, 48"},
   {cat:"U18", dow:"Sab", date:"05/12/2026", time:"15.00", home:"TEVERE EUR HOCKEY ASD", away:"ASD HOCKEY CLUB ROMA", venue:"Euroma Stadium — Via Bilbao, 12"},
   // Under 16
   {cat:"U16", dow:"Dom", date:"18/10/2026", time:"10.00", home:"ASD HOCKEY CLUB ROMA", away:"BUTTERFLY ROMA H.C.C.", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
   {cat:"U16", dow:"Dom", date:"07/11/2026", time:"13.00", home:"ASD HOCKEY AVEZZANO 1969", away:"ASD HOCKEY CLUB ROMA", venue:"Campo Sportivo Comunale Hockey, Loc. Cretara — Via dei Gladioli, snc"},
   {cat:"U16", dow:"Sab", date:"21/11/2026", time:"17.00", home:"ASD HOCKEY CLUB ROMA", away:"H.POTENZA PICENA", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
+  {cat:"U16", dow:"Dom", date:"13/12/2026", indoor:true, venue:"Millevoi (Divino Amore)"},
+  {cat:"U16", dow:"Dom", date:"24/01/2027", indoor:true, venue:"Potenza Picena"},
   {cat:"U16", dow:"Dom", date:"07/03/2027", time:"12.00", home:"H.POTENZA PICENA", away:"ASD HOCKEY CLUB ROMA", venue:"Stadio Hockey Potenza Picena — Contrada San Girio, snc"},
   {cat:"U16", dow:"Dom", date:"21/03/2027", time:"10.00", home:"BUTTERFLY ROMA H.C.C.", away:"ASD HOCKEY CLUB ROMA", venue:"Centro Giulio Onesti — Via dei Campi Sportivi, 48"},
   {cat:"U16", dow:"Dom", date:"11/04/2027", time:"12.00", home:"ASD HOCKEY CLUB ROMA", away:"ASD HOCKEY AVEZZANO 1969", venue:"Compl.Sport.Tre Fontane, Esedra Sinistra — Via Tre Fontane, 25"},
@@ -422,7 +439,7 @@ const raw = [
 
 const matches = raw.map(m => {
   const dt = parseIt(m.date, m.time);
-  const isHome = m.home === ROMA;
+  const isHome = !m.indoor && m.home === ROMA;
   return {...m, dt, isHome};
 }).sort((a,b) => a.dt - b.dt);
 
@@ -488,8 +505,22 @@ function render(){
     const row = document.createElement('div');
     row.className = "match" + (isPast ? " is-past" : "");
 
-    const homeLabel = m.home === ROMA ? `<span class="roma">${m.home}</span>` : m.home;
-    const awayLabel = m.away === ROMA ? `<span class="roma">${m.away}</span>` : m.away;
+    let placeClass, placeLabel, timeLabel, body;
+    if(m.indoor){
+      placeClass = 'indoor';
+      placeLabel = 'Indoor';
+      timeLabel = 'Intera giornata';
+      body = `<div class="venue main">${m.venue}</div>`;
+    } else {
+      placeClass = m.isHome ? 'home' : 'away';
+      placeLabel = m.isHome ? 'Casa' : 'Trasferta';
+      timeLabel = m.time.replace('.', ':');
+      const homeLabel = m.home === ROMA ? `<span class="roma">${m.home}</span>` : m.home;
+      const awayLabel = m.away === ROMA ? `<span class="roma">${m.away}</span>` : m.away;
+      body = `
+        <div class="teams">${homeLabel} – ${awayLabel}</div>
+        <div class="venue">${m.venue}</div>`;
+    }
 
     row.innerHTML = `
       <div class="date-block">
@@ -500,12 +531,11 @@ function render(){
         <div class="details-top">
           <div class="tags">
             <span class="tag cat-${m.cat}">${m.cat}</span>
-            <span class="tag ${m.isHome ? 'home' : 'away'}">${m.isHome ? 'Casa' : 'Trasferta'}</span>
+            <span class="tag ${placeClass}">${placeLabel}</span>
           </div>
-          <div class="time">${m.time.replace('.', ':')}</div>
+          <div class="time">${timeLabel}</div>
         </div>
-        <div class="teams">${homeLabel} – ${awayLabel}</div>
-        <div class="venue">${m.venue}</div>
+        ${body}
       </div>
     `;
     list.appendChild(row);
